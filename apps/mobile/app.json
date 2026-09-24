@@ -1,0 +1,72 @@
+{
+  "expo": {
+    "name": "VoiceLens",
+    "slug": "voicelens",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "voicelens",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.voicelens.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0E0D0C",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.voicelens.app"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0E0D0C",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 76
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "사진을 촬영하기 위해 카메라를 사용합니다.",
+          "microphonePermission": "음성 명령을 위해 마이크를 사용합니다.",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "음성으로 사진을 보정하기 위해 마이크를 사용합니다."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "보정할 사진을 불러오기 위해 사진 보관함에 접근합니다."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "보정한 사진을 저장하기 위해 사진 보관함에 접근합니다.",
+          "savePhotosPermission": "보정한 사진을 앨범에 저장합니다."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "backgroundColor": "#0E0D0C"
+  }
+}

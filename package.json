@@ -1,0 +1,11 @@
+{
+  "name": "voicelens",
+  "private": true,
+  "description": "말로 찍고, 말로 보정하는 사진 앱 (Expo + Gemini)",
+  "scripts": {
+    "server": "npm --prefix apps/server run dev",
+    "mobile": "npm --prefix apps/mobile run start",
+    "smoke": "npm --prefix apps/server run smoke",
+    "typecheck": "npm --prefix apps/server run typecheck && (cd apps/mobile && npx tsc --noEmit)"
+  }
+}
