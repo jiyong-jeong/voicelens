@@ -38,14 +38,15 @@ function Waveform({ level, active }: { level: number; active: boolean }) {
   );
 }
 
-export function VoiceSheet({ cmd }: { cmd: Cmd }) {
+/** variant=panel: 데스크톱 웹 오른쪽 패널 안에서 사용 (배경/여백은 패널이 담당) */
+export function VoiceSheet({ cmd, variant = 'sheet' }: { cmd: Cmd; variant?: 'sheet' | 'panel' }) {
   const [typed, setTyped] = useState('');
   const listening = cmd.phase === 'listening';
   const busy = cmd.phase === 'thinking' || cmd.phase === 'editing';
   const secs = Math.floor(cmd.voice.durationMs / 1000).toString().padStart(2, '0');
 
   return (
-    <View style={s.sheet}>
+    <View style={variant === 'sheet' ? s.sheet : s.panel}>
       <View style={s.row}>
         <Waveform level={cmd.voice.level} active={listening} />
         {busy && <ActivityIndicator color={colors.accent} size="small" />}
@@ -91,7 +92,7 @@ export function VoiceSheet({ cmd }: { cmd: Cmd }) {
         />
       )}
 
-      <View style={s.actions}>
+      <View style={[s.actions, variant === 'panel' && { marginTop: 'auto' }]}>
         <Button variant={listening ? 'light' : 'primary'} onPress={cmd.toggleListening} disabled={busy}>
           {listening ? '말하기 끝' : cmd.transcript ? '다시 말하기' : '말로 보정하기'}
         </Button>
@@ -102,6 +103,7 @@ export function VoiceSheet({ cmd }: { cmd: Cmd }) {
 
 const s = StyleSheet.create({
   sheet: { backgroundColor: colors.surface, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, padding: 20, paddingBottom: 28, gap: 14 },
+  panel: { flex: 1, gap: 16 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   wave: { flexDirection: 'row', alignItems: 'center', gap: 3, height: 28 },
   bar: { width: 3, borderRadius: 2, backgroundColor: colors.accent },

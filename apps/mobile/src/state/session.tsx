@@ -43,8 +43,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [selected, setSelected] = useState<Region | null>(null);
 
-  const push = useCallback((next: EditState, entry: HistoryEntry) => {
-    setStack((s) => [...s, next]);
+  /** 항상 최신 스택 top 을 기준으로 다음 상태를 만든다 (연속 호출 시 앞선 결과 유실 방지) */
+  const push = useCallback((make: (top: EditState) => EditState, entry: HistoryEntry) => {
+    setStack((s) => {
+      const top = s.at(-1);
+      return top ? [...s, make(top)] : s;
+    });
     setHistory((h) => [...h, entry]);
   }, []);
 
@@ -52,26 +56,27 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const applyPlan = useCallback(
     (said: string, plan: EditPlan) => {
-      if (!current) return;
-      let global = current.global;
-      const regions = [...current.regions];
-      for (const op of plan.operations) {
-        if (!op.adjustments) continue;
-        if (op.target === 'global') {
-          global = mergeAdjustments(global, op.adjustments);
-          continue;
+      push((top) => {
+        let global = top.global;
+        const regions = [...top.regions];
+        for (const op of plan.operations) {
+          if (!op.adjustments) continue;
+          if (op.target === 'global') {
+            global = mergeAdjustments(global, op.adjustments);
+            continue;
+          }
+          const region =
+            plan.regions.find((r) => r.label === op.regionLabel) ??
+            (selected && (!op.regionLabel || op.regionLabel === selected.label) ? selected : undefined);
+          if (!region) continue;
+          const k = regions.findIndex((r) => r.region.label === region.label);
+          if (k >= 0) regions[k] = { region, adjustments: mergeAdjustments(regions[k].adjustments, op.adjustments) };
+          else regions.push({ region, adjustments: op.adjustments });
         }
-        const region =
-          plan.regions.find((r) => r.label === op.regionLabel) ??
-          (selected && (!op.regionLabel || op.regionLabel === selected.label) ? selected : undefined);
-        if (!region) continue;
-        const i = regions.findIndex((r) => r.region.label === region.label);
-        if (i >= 0) regions[i] = { region, adjustments: mergeAdjustments(regions[i].adjustments, op.adjustments) };
-        else regions.push({ region, adjustments: op.adjustments });
-      }
-      push({ ...current, global, regions }, { said, summary: plan.reply });
+        return { ...top, global, regions };
+      }, { said, summary: plan.reply });
     },
-    [current, selected, push],
+    [selected, push],
   );
 
   const value = useMemo<Session>(
@@ -87,7 +92,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       },
       applyPlan,
       replaceBase(said, image, summary) {
-        if (current) push({ ...current, base: image }, { said, summary });
+        push((top) => ({ ...top, base: image }), { said, summary });
       },
       setSelected,
       undo() {

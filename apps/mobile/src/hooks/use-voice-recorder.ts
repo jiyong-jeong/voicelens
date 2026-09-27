@@ -5,11 +5,11 @@ import {
   useAudioRecorder,
   useAudioRecorderState,
 } from 'expo-audio';
-import { File } from 'expo-file-system';
 import { useCallback } from 'react';
+import { readAsMedia } from '@/lib/media-io';
 import type { Media } from '@/lib/types';
 
-/** 탭 토글 방식 녹음. stop()이 base64 오디오(m4a/AAC)를 돌려준다. */
+/** 탭 토글 방식 녹음. stop()이 base64 오디오를 돌려준다. */
 export function useVoiceRecorder() {
   const recorder = useAudioRecorder({ ...RecordingPresets.HIGH_QUALITY, isMeteringEnabled: true });
   const state = useAudioRecorderState(recorder, 100);
@@ -26,8 +26,8 @@ export function useVoiceRecorder() {
     await recorder.stop();
     await setAudioModeAsync({ allowsRecording: false });
     if (!recorder.uri) return null;
-    const data = await new File(recorder.uri).base64();
-    return { data, mimeType: 'audio/mp4' };
+    // 네이티브: m4a(AAC) / 웹: blob URL (webm 또는 mp4 — 실제 타입은 blob 에서 읽음)
+    return readAsMedia(recorder.uri, 'audio/mp4');
   }, [recorder]);
 
   return {

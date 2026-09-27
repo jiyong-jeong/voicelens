@@ -8,6 +8,7 @@ export const config = {
   port: Number(process.env.PORT ?? 8787),
   appToken: process.env.APP_TOKEN ?? '',
   provider: process.env.LLM_PROVIDER ?? 'gemini',
+  webOrigins: (process.env.WEB_ORIGINS ?? 'http://localhost:8081').split(',').map((o) => o.trim()).filter(Boolean),
   gemini: {
     get apiKey() {
       return required('GEMINI_API_KEY');

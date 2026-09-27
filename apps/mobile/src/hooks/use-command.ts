@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { api } from '@/lib/api';
 import type { EditPlan, Media } from '@/lib/types';
 import { useSession } from '@/state/session';
@@ -25,6 +25,8 @@ export function useCommand(handlers: Handlers = {}) {
   const [error, setError] = useState<string | null>(null);
 
   const image: Media | undefined = session.current?.base;
+  /** 한 명령이 끝나기 전 다음 명령이 들어와 겹쳐 실행되는 것 방지 */
+  const busy = useRef(false);
 
   const execute = useCallback(
     async (said: string, p: EditPlan) => {
@@ -65,6 +67,8 @@ export function useCommand(handlers: Handlers = {}) {
 
   const run = useCallback(
     async (task: () => Promise<{ text: string; plan: EditPlan | null }>) => {
+      if (busy.current) return;
+      busy.current = true;
       setError(null);
       setPhase('thinking');
       try {
@@ -78,6 +82,8 @@ export function useCommand(handlers: Handlers = {}) {
       } catch (e) {
         setError((e as Error).message);
         setPhase('error');
+      } finally {
+        busy.current = false;
       }
     },
     [execute],

@@ -90,7 +90,7 @@ Gemini 구현 메모:
 2. 이미지 전체를 `toMatrix(global)` 로 그림
 3. 각 영역마다 `Group clip=boxRect` 안에서 `toMatrix(global + region)` 로 한 번 더 그림
 4. `vignette > 0` 이면 RadialGradient 오버레이
-5. 저장: `canvasRef.makeImageSnapshot().encodeToBase64()` → `File(Paths.cache)` → `Asset.create`
+5. 저장: `renderToJpeg(state)` — `drawAsImage` 로 작업 해상도 오프스크린 렌더 → `media-io`(앱: 앨범 / 웹: 다운로드)
 
 컬러 매트릭스 구성 순서: 노출(2^EV 스케일) → 그림자(오프셋+/기울기−) → 하이라이트(기울기) → 대비(0.5 중심) → 채도(Rec.709 휘도) → 색온도/틴트(R·B / G 오프셋). 하이라이트/그림자는 선형 근사.
 
@@ -110,12 +110,14 @@ Gemini 구현 메모:
 | `GEMINI_MODEL_IMAGE_EDIT` | `gemini-3.1-flash-image` | |
 | `PORT` | `8787` | |
 | `APP_TOKEN` | `dev-local-token` | 개발용 공유 토큰 (비어 있으면 검사 생략) |
+| `WEB_ORIGINS` | `http://localhost:8081` | 웹 앱 CORS 허용 출처 (콤마 구분) |
 
 `apps/mobile/.env` — `EXPO_PUBLIC_*` 는 번들에 포함되므로 비밀을 넣지 않는다.
 
 | 키 | 설명 |
 |---|---|
-| `EXPO_PUBLIC_API_URL` | 서버 주소. 실기기에서는 Mac의 LAN IP |
+| `EXPO_PUBLIC_API_URL` | (네이티브) 서버 주소. 실기기에서는 Mac의 LAN IP — 와이파이가 바뀌면 갱신 |
+| `EXPO_PUBLIC_WEB_API_URL` | (웹, 선택) 기본값은 `페이지 호스트:8787` |
 | `EXPO_PUBLIC_APP_TOKEN` | 서버 `APP_TOKEN` 과 동일 |
 
 ## 6. 권한 (app.json 플러그인)

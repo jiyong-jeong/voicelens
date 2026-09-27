@@ -22,8 +22,12 @@
       "package": "com.voicelens.app"
     },
     "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "output": "single",
+      "favicon": "./assets/images/favicon.png",
+      "name": "VoiceLens",
+      "shortName": "VoiceLens",
+      "themeColor": "#0E0D0C",
+      "backgroundColor": "#0E0D0C"
     },
     "plugins": [
       "expo-router",

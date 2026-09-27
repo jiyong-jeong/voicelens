@@ -12,6 +12,7 @@
 | [docs/DESIGN.md](docs/DESIGN.md) | Claude Design 캔버스, 디자인 토큰, 화면 구성 |
 | [docs/ISSUES.md](docs/ISSUES.md) | 알려진 이슈, 기술 부채, 보안 과제, 로드맵 |
 | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | 로컬 실행, 테스트, 디버깅 |
+| [docs/WEB.md](docs/WEB.md) | 웹(Expo Web) 지원: 플랫폼 차이, 권한, 제약 |
 
 ## 반드시 지킬 규칙
 
@@ -20,6 +21,7 @@
 - 편집 계획 스키마는 `apps/server/src/llm/schema.ts`(zod) 가 원본이고 `apps/mobile/src/lib/types.ts` 가 미러다. **둘을 함께 수정**한다.
 - 파라메트릭 보정(노출·색 등)은 디바이스에서 비파괴로 처리한다. 생성형 모델은 파라메트릭으로 불가능한 요청에만 쓴다 (비용·지연·원본 훼손).
 - Expo SDK 57 / RN 0.86 — Expo API는 자주 바뀐다. 기억에 의존하지 말고 `apps/mobile/AGENTS.md` 의 지침대로 버전별 문서를 확인한다. 패키지는 `npx expo install` 로 추가.
+- 앱은 iOS·Android·웹 공용 코드다. 플랫폼 전용 API는 `*.web.ts` 분리 또는 `isWeb` 분기로 처리하고, 폭 ≥ 960px 웹은 `useWide()` 레이아웃을 쓴다.
 - Node 22 사용 (`.nvmrc`). 시스템 기본 Node 21은 RN 0.86 엔진 조건을 만족하지 않는다.
 - 모델 ID는 코드에 하드코딩하지 말고 `GEMINI_MODEL_*` 환경변수로 바꾼다.
 

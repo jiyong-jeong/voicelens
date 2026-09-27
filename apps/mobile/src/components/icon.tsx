@@ -2,7 +2,7 @@ import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import { colors } from '@/theme/tokens';
 
 /** 디자인 캔버스의 인라인 스트로크 아이콘과 동일한 패스 */
-export type IconName = 'flash' | 'settings' | 'mic' | 'back' | 'undo' | 'compare' | 'close';
+export type IconName = 'flash' | 'settings' | 'mic' | 'back' | 'undo' | 'compare' | 'close' | 'camera' | 'upload';
 
 export function Icon({ name, size = 20, color = colors.text }: { name: IconName; size?: number; color?: string }) {
   const p = { stroke: color, strokeWidth: 1.7, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, fill: 'none' };
@@ -25,6 +25,13 @@ export function Icon({ name, size = 20, color = colors.text }: { name: IconName;
       {name === 'undo' && <Path d="M9 14 4 9l5-5M4 9h11a5 5 0 0 1 0 10h-3" {...p} />}
       {name === 'compare' && <Path d="m9 6-6 6 6 6M15 6l6 6-6 6" {...p} />}
       {name === 'close' && <Path d="M6 6l12 12M18 6 6 18" {...p} />}
+      {name === 'camera' && (
+        <>
+          <Path d="M4 8h3l2-3h6l2 3h3v11H4z" {...p} />
+          <Circle cx={12} cy={13} r={3.5} {...p} />
+        </>
+      )}
+      {name === 'upload' && <Path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" {...p} />}
     </Svg>
   );
 }
